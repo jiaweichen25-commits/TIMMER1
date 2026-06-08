@@ -6,6 +6,7 @@ secondi = 0
 secondi_totali = 0
 in_esecuzione =False
 secondi_sessione = 0
+gia_salvato = False
 
 def aggiorna():
     global secondi, secondi_totali
@@ -33,9 +34,8 @@ def start():
     pagine = campo_pagine.get().strip()
     pagina_finale = campo_pagina_finale.get().strip()
 
-    if libro == "" or pagine == "" or pagina_finale == "":
+    if libro == "" or pagine == "":
         return
-
 
     if secondi <= 0:
         return
@@ -67,13 +67,17 @@ def toggle(event=None):
         start()
 
 def salva_sessione(): 
+    global gia_salvato
+
+    if gia_salvato:
+        return print("Hai già salvato una volta!")
     pagine_lette = campo_pagine.get()
     libro = campo_libro.get()
     pagina_finale = campo_pagina_finale.get()
 
     if libro == "" or pagine_lette == "" or pagina_finale == "":
-        return
-
+        return print("Ti sei dimenticato di mettere a che opagina sei arrivato!")
+        
     adesso = datetime.now()
     minuti = secondi_sessione // 60
 
@@ -86,6 +90,7 @@ def salva_sessione():
             f"Siamo arrivati a pagina {pagina_finale}\n"
 
         )
+    gia_salvato = True
 
 finestra = tk.Tk()
 finestra.title("Study Timer")
@@ -111,6 +116,8 @@ btn_reset.pack(side="left", padx=10)
 btn_imposta = tk.Button(frame_btn, text="Imposta", command=imposta)
 btn_imposta.pack(side="left", padx=30)
 
+btn_salva = tk.Button(frame_btn, text="Salva", command=salva_sessione)
+btn_salva.pack(side="left", padx=10)
 
 finestra.bind("|", reset)    # "|" per reset
 finestra.bind("\\", toggle) # "\" sia per start che stop
